@@ -1,4 +1,5 @@
 ﻿using E_Shop_API.Models;
+using E_Shop_API.Responses.СategoryResponses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,24 @@ namespace E_Shop_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GET(int categoryId)
+        public async Task<GetCategorysResponse> Get()
         {
-            return await _context.Products
-                .Where(x => x.СategoryId == categoryId)
+            var query = _context.Сategorys
+                .Select(x => new GetCategorysResponseItem()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                });
+            var categoryTotalCount = await query.CountAsync();
+            var categorys = await query
+                .OrderBy(x => x.Name)
                 .ToListAsync();
+
+            return new GetCategorysResponse()
+            {
+                CategoryTotalCount = categoryTotalCount,
+                Categorys = categorys
+            };
         }
     }
 }
