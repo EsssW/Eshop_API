@@ -49,5 +49,39 @@ namespace E_Shop_API.Controllers
             };
 
         }
+        [HttpGet("GetByIds")]
+        public async Task<GetProductResponse> GetByIds([FromQuery] int[] ids)
+        {
+            var query = _context.Products
+                .Select(x => new GetProductResponseItem()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    ImageURL = x.ImageURL,
+                    Price = x.Price,
+                    Manufacture = new GetProductResponseItemManufacture()
+                    {
+                        Id = x.Manufacture!.Id,
+                        Name = x.Manufacture!.Name,
+                    },
+                    Category = new GetProductResponseItemCategory()
+                    {
+                        Id = x.Сategory!.Id,
+                        Name = x.Сategory!.Name,
+                    }
+                });
+
+            query = query
+                .Where(x => ids.Contains(x.Id));
+
+            var productTotalCount = await query.CountAsync();
+            var products = await query.ToListAsync();
+
+            return new GetProductResponse()
+            {
+                ProductTotalCount = productTotalCount,
+                Products = products,
+            };
+        }
     }
 }
