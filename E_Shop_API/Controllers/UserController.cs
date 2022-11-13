@@ -48,6 +48,23 @@ namespace E_Shop_API.Controllers
             return Ok(user.Id);
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(LoginRequest request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Login == request.Login)
+                ?? throw new Exception("User not found");
+
+            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest("Wrong password");
+            }
+
+            string token = CreateToken(user);
+
+            return Ok(token);
+        }
+
 
         #region Creae password hash and verify passhash
 
