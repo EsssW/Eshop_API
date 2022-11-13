@@ -6,6 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options => options.AddPolicy(name: "EShopOrigns",
+    policy=>{
+        policy.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader();
+    }
+));
 
 var connString = builder.Configuration.GetConnectionString("E_Shop");
 
@@ -27,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("EShopOrigns");
 
 app.UseAuthorization();
 
