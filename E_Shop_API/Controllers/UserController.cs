@@ -17,7 +17,8 @@ namespace E_Shop_API.Controllers
     public class UserController : ControllerBase
     {
         private readonly EShopDbContext _context;
-        private readonly IConfiguration _configuration;  
+        private readonly IConfiguration _configuration;
+        private readonly IUserService _userService;
 
         public UserController(EShopDbContext context, IConfiguration configuration)
         {
