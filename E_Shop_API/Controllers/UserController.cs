@@ -1,5 +1,7 @@
 ﻿using E_Shop_API.Models;
 using E_Shop_API.Requests.UserRequests;
+using E_Shop_API.Responses._UserResponses;
+using E_Shop_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +84,37 @@ namespace E_Shop_API.Controllers
             return Ok(token);
         }
 
+        [HttpPut]
+        [Authorize]
+        public async Task Put(UserPutRequest request)
+        {
+            var login = _userService.GetLogin();
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Login == login)
+                ?? throw new Exception("User not found");
+
+            if (request.Name != null)
+                user.Name = request.Name;
+            if (request.Phone != null)
+                user.Phone = request.Phone;
+            if (request.Email != null)
+                user.Email = request.Email;
+
+            await _context.SaveChangesAsync();
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task Delete()
+        {
+            var login = _userService.GetLogin();
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Login == login)
+                ?? throw new Exception("User not found");
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
 
         #region Creae password hash and verify passhash
 
