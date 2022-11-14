@@ -1,4 +1,5 @@
 ﻿using E_Shop_API.Responses.ProductResponses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
