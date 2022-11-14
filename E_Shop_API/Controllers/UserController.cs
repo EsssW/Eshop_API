@@ -25,7 +25,23 @@ namespace E_Shop_API.Controllers
             _context = context;
             _configuration= configuration; 
         }
+        [HttpGet]
+        [Authorize]
+        public async Task<UserResponses> Get()
+        {
+            var login = _userService.GetLogin();
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Login == login)
+                ?? throw new Exception("User not found");
 
+            return new UserResponses()
+            {
+                Login = login,
+                Name = user.Name,
+                Phone = user.Phone,
+                Email = user.Email
+            };
+        }
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(RegisterRequest request)
         {
