@@ -1,4 +1,5 @@
 using E_Shop_API;
+using E_Shop_API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -12,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 //builder.Services.AddCors(options => options.AddPolicy(name: "EShopOrigns",
 //    policy=>{
 //        policy.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader();
@@ -53,7 +55,12 @@ builder.Services.AddSwaggerGen(
 
     });
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
+
+
 var app = builder.Build();
+    
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

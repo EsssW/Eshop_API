@@ -20,9 +20,9 @@ namespace E_Shop_API.Controllers
     {
         private readonly EShopDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(EShopDbContext context, IConfiguration configuration, UserService userService)
+        public UserController(EShopDbContext context, IConfiguration configuration, IUserService userService)
         {
             _context = context;
             _configuration= configuration;
