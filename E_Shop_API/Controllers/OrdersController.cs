@@ -1,4 +1,5 @@
 ﻿using E_Shop_API.Models;
+using E_Shop_API.Requests.OrderRequests;
 using E_Shop_API.Responses.OrderResponses;
 using E_Shop_API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -65,7 +66,52 @@ namespace E_Shop_API.Controllers
             };
         }
 
-        
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult<int>> Post(OrderPostRequest request)
+        {
+            var login = _userService.GetLogin();
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Login == login)
+                ?? throw new Exception("User not found");
+
+            if (!isOrderItemsUnique(request))
+                throw new Exception("ShoeId and RuSize combination must be unique");
+
+            var products = await _context.Products
+                .Where(x => request.OrderItems.Select(x => x.ProductId).Contains(x.Id))
+                .ToListAsync();
+
+            var orderItems = request.OrderItems
+                .Select(x => new OrderItem()
+                {
+                    Product = products.FirstOrDefault(p => p.Id == x.ProductId)
+                        ?? throw new Exception($"Not found shoe with id {x.ProductId}")
+                })
+                .ToList();
+
+            var order = new Order()
+            {
+                OrderDateTime = DateTime.UtcNow,
+                Addres = request.Addres,
+                ProductCount = orderItems.Count(),
+                Sum = orderItems.Sum(x => x.Product!.Price),
+                User = user,
+                OrderItems = orderItems,
+            };
+
+            await _context.AddAsync(order);
+            await _context.SaveChangesAsync();
+
+            return Ok(order.Id);
+        }
+
+        private bool isOrderItemsUnique(OrderPostRequest request)
+        {
+            return request.OrderItems
+                .GroupBy(x => new { x.ProductId })
+                .All(x => x.Count() == 1);
+        }
 
     }
 }
