@@ -1,4 +1,5 @@
-﻿using E_Shop_API.Responses.ProductResponses;
+﻿using E_Shop_API.Requests.ProductRequests;
+using E_Shop_API.Responses.ProductResponses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace E_Shop_API.Controllers
         }
 
         [HttpGet]
-        public async Task<GetProductResponse> Get()
+        public async Task<GetProductResponse> Get([FromQuery] ProductGetRequest request)
         {
             // создание запроса и внутри него "сопоставление полей"
             var query = _context.Products
@@ -39,6 +40,10 @@ namespace E_Shop_API.Controllers
                         Name=x.Сategory!.Name,
                     }
                 });
+            query = query
+                    .Where(x => request.SearchQuery == null || x.Name.ToLower().Contains(request.SearchQuery.ToLower()))
+                    .Where(x => request.ManufactureFilters == null || request.ManufactureFilters.Contains(x.Manufacture.Id))
+                    .Where(x => request.CategoryFilters == null || request.CategoryFilters.Contains(x.Category.Id));
 
             var productTotalCount = await query.CountAsync();
             var products = await query.ToListAsync();
