@@ -4,13 +4,13 @@
     {
         public int Id { get; set; }
 
-        public DateTime OrderDate { get; set; }
+        public DateTime OrderDateTime { get; set; }
 
         public string Addres { get; set; } = default!;
 
         public int Sum { get; set; }
 
-        public int Count { get; set; }
+        public int ProductCount { get; set; }
 
         public List<GetOrdersResponseItemOrderItem>? OrderItems { get; set; }
     }
