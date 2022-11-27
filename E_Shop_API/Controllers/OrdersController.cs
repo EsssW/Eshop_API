@@ -76,7 +76,7 @@ namespace E_Shop_API.Controllers
                 ?? throw new Exception("User not found");
 
             if (!isOrderItemsUnique(request))
-                throw new Exception("ShoeId and RuSize combination must be unique");
+                throw new Exception("Product must be unique");
 
             var products = await _context.Products
                 .Where(x => request.OrderItems.Select(x => x.ProductId).Contains(x.Id))
