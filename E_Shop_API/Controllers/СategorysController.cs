@@ -1,5 +1,6 @@
 ﻿using E_Shop_API.Models;
 using E_Shop_API.Responses.СategoryResponses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ namespace E_Shop_API.Controllers
         }
 
         [HttpGet]
+        //[Authorize]
         public async Task<GetCategorysResponse> Get()
         {
             var query = _context.Сategorys

@@ -117,12 +117,12 @@ namespace E_Shop_API.Controllers
             await _context.SaveChangesAsync();
         }
 
-        [HttpGet,Authorize]
-        public ActionResult<string> GetMe()
-        {
-            var login=_userService.GetLogin();
-            return Ok(login);
-        }
+        //[HttpGet,Authorize]
+        //public ActionResult<string> GetMe()
+        //{
+        //    var login=_userService.GetLogin();
+        //    return Ok(login);
+        //}
 
         #region Creae password hash and verify passhash
 

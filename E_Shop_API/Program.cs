@@ -14,12 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-//builder.Services.AddCors(options => options.AddPolicy(name: "EShopOrigns",
-//    policy=>{
-//        policy.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader();
-//    }
-//));
-
 var connString = builder.Configuration.GetConnectionString("E_Shop");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
