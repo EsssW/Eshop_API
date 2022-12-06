@@ -16,6 +16,20 @@ builder.Services.AddControllers();
 
 var connString = builder.Configuration.GetConnectionString("E_Shop");
 
+builder.Services.AddSwaggerGen(
+    options =>
+    {
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+
+    });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -35,26 +49,15 @@ builder.Services.AddDbContext<EShopDbContext>(opt =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-    options =>
-    {
-        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-        {
-            Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-            In = ParameterLocation.Header,
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
-        });
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
 
-    });
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();
-    
+
+app.UseAuthentication();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -71,6 +74,7 @@ app.UseHttpsRedirection();
 
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 
